@@ -5,23 +5,26 @@ import { v4 as uuidv4 } from 'uuid';
 import { collection, addDoc, getDoc, setDoc,doc, getDocs } from "firebase/firestore";
 import { db } from '../../config';
 import "./sell.css"
+import Sellbtn from './Sellbtn';
+import {  useLocation } from 'react-router-dom';
 
 
 
 export default function Sell() {
-
+  const [user, setUser] = useState(null);
   const [planObj, setPlanObj] = useState({
  name: "",
-email: "",
+email: user?.email,
 phone:"",
 date:"",
 amount:"",
 type:""
 })
-  const [user, setUser] = useState(null);
+  const navigate = useLocation()
     useEffect(() => {
         const unsubscribe = auth.onAuthStateChanged(user => {
           setUser(user);
+          planObj["email"] = user.email
         });
     
         return () => unsubscribe();
@@ -31,7 +34,7 @@ type:""
         console.log(planObj)
     let id= uuidv4();
     
-  const plansRef = collection(db, planObj["type"]);
+  const plansRef = collection(db, "plans");
 
 await setDoc(doc(plansRef,id), planObj);
 
@@ -53,12 +56,12 @@ const selectHandler=((e)=>{
        <div className="form">
         <div className='input-box'>
           <label>Full Name</label>
-          <input type="text" placeholder="Enter full name" required  onChange={inputHandler} name="name"/>
+          <input type="text" placeholder="Enter full name" required  onChange={inputHandler} name="name" />
         </div>
 
         <div className="input-box">
           <label>Email Address</label>
-          <input type="text" placeholder="Enter email address" required  name="email" onChange={inputHandler}/>
+          <input type="text" placeholder="Enter email address" required  name="email" disabled value={user ?.email}/>
         </div>
 
         <div className="column">
@@ -79,22 +82,22 @@ const selectHandler=((e)=>{
               <select onChange={selectHandler}>{
                 [{"name": "Life Insurance", "value":"life"},
                 {"name": "Car Insurance", "value":"car"},
-                {"name": "Health Insurance", "value":"health"}].map((e)=>{
+                {"name": "Health Insurance", "value":"health"},
+                {"name": "Family Health Insurance", "value":"family"},
+                {"name": "Travel Insurance", "value":"Travel"},
+                {"name": "Home Insurance", "value":"health"},
+                {"name": "Invesment Plan", "value":"invesment"},
+                {"name": "Retirement Plan", "value":"Retirement"}].map((e)=>{
                  return <option value={e.value}>{e.name}</option>
                 })}
-                {/* <option hidden>Insuarance Option</option>
-                <option>Life Insurance</option>
-                <option>Home Insurance</option>
-                <option>Health Insurance</option>
-                <option>Car Insuarance</option>
-                <option>Family Health Insuarance</option>
-                <option>Travel Insuarance</option> */}
+                
               </select>
             </div>
-            <input type="text" placeholder="Enter your city" required onChange={inputHandler} name='city' style={{width:"100%"}}/>
+            <input type="text" placeholder="Enter your city"onChange={inputHandler} name='city' style={{width:"100%"}} required />
           </div>
         </div>
-        <button onClick={dataHandler}>Submit</button>
+        {/* <button onClick={dataHandler}>Submit</button> */}
+        <Sellbtn dataHandler={dataHandler} btn={"Submit"} text={"Succesfully Submitted"}/>
       </div>
     </div>
     </div>):(<></>)}

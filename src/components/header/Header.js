@@ -20,6 +20,7 @@ import {auth, provider} from "../../config"
 import {signInWithPopup} from "firebase/auth"
 import { getData } from '../Common/CommonFunc';
 import { Alert, AlertTitle, Button } from '@mui/material';
+import Sellbtn from '../Sell/Sellbtn';
 
 
 
@@ -66,7 +67,13 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 const searchObj ={
   '^health|health\sinsurance$': 'health',
   '^car|car\sinsurance$': 'car',
-  '^life|life\sinsurance$': 'life'
+  '^life|life\sinsurance$': 'life',
+  '^home|home\sinsurance$': 'home',
+  '^trvel|travel\sinsurance$': 'travel',
+  '^family|family health\sinsurance$': 'family health',
+  '^invesment|invesment\splans$': 'invesment',
+  '^retirement|retirement\snplans$': 'retirement',
+  '^guaranteed|guaranteed return\splans$': 'guaranteed return'
 };
 
 export default function PrimarySearchAppBar() {
@@ -113,6 +120,11 @@ export default function PrimarySearchAppBar() {
         }
       }
     }
+  })
+  const profileHandler=(async()=>{
+    let data= await getData(user.email, true)
+      console.log(user)    
+    navigate("/show", {state:data})
   })
   const searchHandler=(async(e)=>{
     let searchValue= e.target.value
@@ -161,6 +173,33 @@ export default function PrimarySearchAppBar() {
   const menuId = 'primary-search-account-menu';
   
   const mobileMenuId = 'primary-search-account-menu-mobile';
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+    handleMobileMenuClose();
+  };
+  const renderMenu = (
+    <Menu
+      anchorEl={anchorEl}
+      anchorOrigin={{
+        vertical: 'top',
+        horizontal: 'right',
+      }}
+      id={menuId}
+      keepMounted
+      transformOrigin={{
+        vertical: 'top',
+        horizontal: 'right',
+      }}
+      open={isMenuOpen}
+      onClose={handleMenuClose}
+    >
+      {user ?(<><MenuItem onClick={profileHandler}>Profile</MenuItem><MenuItem onClick={signoutHandler}>Sign Out</MenuItem></>) : (<MenuItem onClick={handleClick}>Sign In</MenuItem>)}
+            
+      
+            <Sellbtn dataHandler={sellHandler} btn={"Sell"} text={"Please Sign First"}/>
+            
+    </Menu>
+  );
   const renderMobileMenu = (
     <Menu
       anchorEl={mobileMoreAnchorEl}
@@ -178,7 +217,7 @@ export default function PrimarySearchAppBar() {
       onClose={handleMobileMenuClose}
     >
       
-      <MenuItem onClick={handleProfileMenuOpen}>
+      {/* <MenuItem onClick={handleProfileMenuOpen}>
         <IconButton
           size="large"
           aria-label="account of current user"
@@ -186,20 +225,19 @@ export default function PrimarySearchAppBar() {
           aria-haspopup="true"
           color="inherit"
         >
-          <AccountCircle />
+          
         </IconButton>
-        <p>Profile</p>
-      </MenuItem>
+        {/* <p>Profile</p> */}
+        
+      {/* </MenuItem> */}
+      {user ?(<><MenuItem onClick={profileHandler}>Profile</MenuItem><MenuItem onClick={signoutHandler}>Sign Out</MenuItem></>) : (<MenuItem onClick={handleClick}>Sign In</MenuItem>)}
+            
+            {/* <MenuItem onClick={sellHandler}>Sell</MenuItem>  */}
+            <MenuItem>
+            <Sellbtn dataHandler={sellHandler} btn={"Sell"} text={"Please Login First"}/>
+            </MenuItem>
     </Menu>
   );
-
-  const images = [
-    'https://amymhaddad.s3.amazonaws.com/morocco-blue.png',
-    'https://cdn.mos.cms.futurecdn.net/qmTrmidGxtYqoT4zjoxPcV-1200-80.jpg.webp',
-    'https://www.vedantu.com/seo/content-images/c3ec8d29-d9c8-4957-a348-c705287c9c85.jpg',
-  ];
-  
-  
 
   return (
     <>
@@ -245,13 +283,10 @@ export default function PrimarySearchAppBar() {
                 onClick={handleProfileMenuOpen}
                 color="inherit"
               >
+                <AccountCircle/>
               </IconButton>
               
             </Box>
-             {/* <AccountCircle /> */}
-             {user ?(<Button onClick={signoutHandler}>Sign Out</Button>) : (<Button onClick={handleClick}>Sign In</Button>)}
-            
-                <Button onClick={sellHandler}>Sell</Button>
             <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
               <IconButton
                 size="large"
@@ -261,7 +296,6 @@ export default function PrimarySearchAppBar() {
                 onClick={handleMobileMenuOpen}
                 color="inherit"
               >
-                
                 <MoreIcon />
               </IconButton>
             </Box>
@@ -270,7 +304,7 @@ export default function PrimarySearchAppBar() {
         
         {renderMobileMenu}
         
-        {/* {renderMenu} */}
+        {renderMenu}
       </Box>
       
       <button className="floating-button" onClick={toggleChat}>
@@ -278,7 +312,7 @@ export default function PrimarySearchAppBar() {
       </button>
       {showChat && ( 
         <div className="chat-container">
-          <div>
+          <div className='input-div'>
           <input type="text" placeholder="Type your message here" onChange={chatHandler}/>
           <button onClick={chatClickHandler}>Send</button>
           </div>

@@ -34,9 +34,9 @@ const getCorretScreen=(tab)=>{
         return <Car/>
         case "Home Insurance":
         return <Home/>
-        case "Treavel Insurance":
+        case "Travel Insurance":
         return <Travel/>
-        case "Family Heath Insurance":
+        case "Family Health Insurance":
         return <Family/>
         case "Invesment Plan":
         return <Invesment/>
