@@ -1,10 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
-import { makeStyles } from '@mui/styles';
-import { useLocation } from 'react-router-dom';
-import { Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@material-ui/core';
-
-
+import { makeStyles } from "@mui/styles";
+import { useLocation } from "react-router-dom";
+import {
+  Button,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+} from "@material-ui/core";
 
 const useStyles = makeStyles({
   table: {
@@ -18,7 +25,7 @@ export default function MyTable() {
   const handleRowClick = (row) => {
     setSelectedRows([...selectedRows, row]);
   };
-  const {state} = useLocation();
+  const { state } = useLocation();
   const handleBuyClick = () => {
     // Handle buy button click here
   };
@@ -36,19 +43,24 @@ export default function MyTable() {
             <TableCell>Buy</TableCell>
           </TableRow>
         </TableHead>
-<TableBody>
+        <TableBody>
           {state.map((row, index) => (
             <TableRow key={index} onClick={() => handleRowClick(row)}>
               <TableCell component="th" scope="row">
-                {index+1}
+                {index + 1}
               </TableCell>
               <TableCell>{row.name}</TableCell>
               <TableCell>{row.phone}</TableCell>
               <TableCell>{row.amount}</TableCell>
               <TableCell>{row.type}</TableCell>
               <TableCell>{row.city}</TableCell>
-  <TableCell>
-                <Button variant="contained" color="primary" style={{backgroundColor: '#2d0041'}} onClick={handleBuyClick}>
+              <TableCell>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  style={{ backgroundColor: "#2d0041" }}
+                  onClick={handleBuyClick}
+                >
                   Buy
                 </Button>
               </TableCell>
@@ -60,18 +72,14 @@ export default function MyTable() {
   );
 }
 
-
 // import React, { useState } from 'react'
 // import { useLocation } from 'react-router-dom'
-
-
 
 // export default function Show() {
 
 //     const {state} = useLocation();
 //     console.log(state)
 
-   
 //   return (
 //     <div>
 //     <ul>{state.map((ele, index)=>{
@@ -82,6 +90,6 @@ export default function MyTable() {
 //     )
 //     })}</ul>
 //     </div>
- 
+
 //   )
 // }

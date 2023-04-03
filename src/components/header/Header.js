@@ -1,83 +1,78 @@
+import * as React from "react";
+import { useState } from "react";
+import { styled, alpha } from "@mui/material/styles";
+import AppBar from "@mui/material/AppBar";
+import Box from "@mui/material/Box";
+import Toolbar from "@mui/material/Toolbar";
+import IconButton from "@mui/material/IconButton";
+import Typography from "@mui/material/Typography";
+import InputBase from "@mui/material/InputBase";
+import MenuItem from "@mui/material/MenuItem";
+import Menu from "@mui/material/Menu";
+import MenuIcon from "@mui/icons-material/Menu";
+import SearchIcon from "@mui/icons-material/Search";
+import AccountCircle from "@mui/icons-material/AccountCircle";
+import MoreIcon from "@mui/icons-material/MoreVert";
+import "../../App.css";
+import { useNavigate } from "react-router-dom";
+import { auth, provider } from "../../config";
+import { signInWithPopup } from "firebase/auth";
+import { getData } from "../Common/CommonFunc";
+import { Alert, AlertTitle } from "@mui/material";
+import Sellbtn from "../Sell/Sellbtn";
 
-import * as React from 'react';
-import { useState } from 'react';
-import { styled, alpha } from '@mui/material/styles';
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
-import InputBase from '@mui/material/InputBase';
-import MenuItem from '@mui/material/MenuItem';
-import Menu from '@mui/material/Menu';
-import MenuIcon from '@mui/icons-material/Menu';
-import SearchIcon from '@mui/icons-material/Search';
-import AccountCircle from '@mui/icons-material/AccountCircle';
-import MoreIcon from '@mui/icons-material/MoreVert';
-import '../../App.css';
-import { useNavigate } from 'react-router-dom';
-import {auth, provider} from "../../config"
-import {signInWithPopup} from "firebase/auth"
-import { getData } from '../Common/CommonFunc';
-import { Alert, AlertTitle, Button } from '@mui/material';
-import Sellbtn from '../Sell/Sellbtn';
-
-
-
-
-const Search = styled('div')(({ theme }) => ({
-  position: 'relative',
+const Search = styled("div")(({ theme }) => ({
+  position: "relative",
   borderRadius: theme.shape.borderRadius,
   backgroundColor: alpha(theme.palette.common.white, 0.15),
-  '&:hover': {
+  "&:hover": {
     backgroundColor: alpha(theme.palette.common.white, 0.25),
   },
   marginRight: theme.spacing(2),
   marginLeft: 0,
-  width: '100%',
-  [theme.breakpoints.up('sm')]: {
+  width: "100%",
+  [theme.breakpoints.up("sm")]: {
     marginLeft: theme.spacing(3),
-    width: 'auto',
+    width: "auto",
   },
 }));
 
-const SearchIconWrapper = styled('div')(({ theme }) => ({
+const SearchIconWrapper = styled("div")(({ theme }) => ({
   padding: theme.spacing(0, 2),
-  height: '100%',
-  position: 'absolute',
-  pointerEvents: 'none',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
+  height: "100%",
+  position: "absolute",
+  pointerEvents: "none",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
 }));
 
 const StyledInputBase = styled(InputBase)(({ theme }) => ({
-  color: 'inherit',
-  '& .MuiInputBase-input': {
+  color: "inherit",
+  "& .MuiInputBase-input": {
     padding: theme.spacing(1, 1, 1, 0),
     // vertical padding + font size from searchIcon
     paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-    transition: theme.transitions.create('width'),
-    width: '100%',
-    [theme.breakpoints.up('md')]: {
-      width: '20ch',
+    transition: theme.transitions.create("width"),
+    width: "100%",
+    [theme.breakpoints.up("md")]: {
+      width: "20ch",
     },
   },
 }));
-const searchObj ={
-  '^health|health\sinsurance$': 'health',
-  '^car|car\sinsurance$': 'car',
-  '^life|life\sinsurance$': 'life',
-  '^home|home\sinsurance$': 'home',
-  '^trvel|travel\sinsurance$': 'travel',
-  '^family|family health\sinsurance$': 'family health',
-  '^invesment|invesment\splans$': 'invesment',
-  '^retirement|retirement\snplans$': 'retirement',
-  '^guaranteed|guaranteed return\splans$': 'guaranteed return'
+const searchObj = {
+  "^health|healthsinsurance$": "health",
+  "^car|carsinsurance$": "car",
+  "^life|lifesinsurance$": "life",
+  "^home|homesinsurance$": "home",
+  "^trvel|travelsinsurance$": "travel",
+  "^family|family healthsinsurance$": "family health",
+  "^invesment|invesmentsplans$": "invesment",
+  "^retirement|retirementsnplans$": "retirement",
+  "^guaranteed|guaranteed returnsplans$": "guaranteed return",
 };
 
 export default function PrimarySearchAppBar() {
-  
   const [showChat, setShowChat] = useState(false);
 
   const toggleChat = () => {
@@ -85,7 +80,7 @@ export default function PrimarySearchAppBar() {
   };
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
-  const [chat, setChat] = useState("")
+  const [chat, setChat] = useState("");
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -98,81 +93,78 @@ export default function PrimarySearchAppBar() {
     setMobileMoreAnchorEl(null);
   };
 
- 
-
   const handleMobileMenuOpen = (event) => {
     setMobileMoreAnchorEl(event.currentTarget);
   };
 
-  const chatHandler=((e)=>{
-    let chatValue= e.target.value
-  setChat(chatValue)
-  })
+  const chatHandler = (e) => {
+    let chatValue = e.target.value;
+    setChat(chatValue);
+  };
 
-  const navigate = useNavigate()
-  const chatClickHandler = (async()=>{
-    if(chat){
+  const navigate = useNavigate();
+  const chatClickHandler = async () => {
+    if (chat) {
       for (const key in searchObj) {
-        if (new RegExp(key,"i").test(chat)) {
-          let data= await getData(searchObj[key])
-          
-           navigate("/show", {state:data})
+        if (new RegExp(key, "i").test(chat)) {
+          let data = await getData(searchObj[key]);
+
+          navigate("/show", { state: data });
         }
       }
     }
-  })
-  const profileHandler=(async()=>{
-    let data= await getData(user.email, true)
-      console.log(user)    
-    navigate("/show", {state:data})
-  })
-  const searchHandler=(async(e)=>{
-    let searchValue= e.target.value
-    if(searchValue){
+  };
+  const profileHandler = async () => {
+    let data = await getData(user.email, true);
+    console.log(user);
+    navigate("/show", { state: data });
+  };
+  const searchHandler = async (e) => {
+    let searchValue = e.target.value;
+    if (searchValue) {
       for (const key in searchObj) {
-        if (new RegExp(key,"i").test(searchValue)) {
-          let data= await getData(searchObj[key])
-          
-           navigate("/show", {state:data})
+        if (new RegExp(key, "i").test(searchValue)) {
+          let data = await getData(searchObj[key]);
+
+          navigate("/show", { state: data });
         }
       }
     }
-  })
+  };
   const [user, setUser] = useState(null);
   React.useEffect(() => {
-      const unsubscribe = auth.onAuthStateChanged(user => {
-        setUser(user);
-      });
-  
-      return () => unsubscribe();
-    }, []);
-  const [value, setValue]= useState('')
-  const handleClick =()=>{
-   signInWithPopup(auth, provider).then((data)=>{
-        setValue(data.user.email)
-        
-   }
-   )
-  }
-  const signoutHandler =(()=>{
-    auth.signOut()
-  })
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      setUser(user);
+    });
 
-  const sellHandler=(()=>{
-    if(user){
-      navigate("/sell")
-    }else{
-      return( 
-      <Alert severity="error">
-  <AlertTitle>Error</AlertTitle>
-  This is an error alert — <strong>check it out!</strong>
-</Alert>)
+    return () => unsubscribe();
+  }, []);
+  const [value, setValue] = useState("");
+  const handleClick = () => {
+    signInWithPopup(auth, provider).then((data) => {
+      setValue(data.user.email);
+    });
+  };
+  const signoutHandler = () => {
+    auth.signOut();
+  };
+
+  const sellHandler = () => {
+    if (user) {
+      navigate("/sell");
+    } else {
+      return (
+        <Alert severity="error">
+          <AlertTitle>Error</AlertTitle>
+          This is an error alert — <strong>check it out!</strong>
+        </Alert>
+      );
     }
-  })
+  };
 
-  const menuId = 'primary-search-account-menu';
-  
-  const mobileMenuId = 'primary-search-account-menu-mobile';
+  const menuId = "primary-search-account-menu";
+
+  const mobileMenuId = "primary-search-account-menu-mobile";
   const handleMenuClose = () => {
     setAnchorEl(null);
     handleMobileMenuClose();
@@ -181,42 +173,55 @@ export default function PrimarySearchAppBar() {
     <Menu
       anchorEl={anchorEl}
       anchorOrigin={{
-        vertical: 'top',
-        horizontal: 'right',
+        vertical: "top",
+        horizontal: "right",
       }}
       id={menuId}
       keepMounted
       transformOrigin={{
-        vertical: 'top',
-        horizontal: 'right',
+        vertical: "top",
+        horizontal: "right",
       }}
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      {user ?(<><MenuItem onClick={profileHandler}>Profile</MenuItem><MenuItem onClick={signoutHandler}>Sign Out</MenuItem></>) : (<MenuItem onClick={handleClick}>Sign In</MenuItem>)}
-            
-      
-            <Sellbtn dataHandler={sellHandler} btn={"Sell"} text={"Please Sign First"}/>
-            
+      {user ? (
+        <>
+          <MenuItem onClick={profileHandler}>Profile</MenuItem>
+          <MenuItem onClick={signoutHandler}>Sign Out</MenuItem>
+        </>
+      ) : (
+        <MenuItem onClick={handleClick}>Sign In</MenuItem>
+      )}
+
+      {!user ? (
+       <Sellbtn
+
+       dataHandler={sellHandler}
+       btn={"Sell"}
+       text={"Please Sign First"}
+     />
+      ) : (
+        <MenuItem onClick={sellHandler}>Sell</MenuItem>
+      )}
     </Menu>
   );
   const renderMobileMenu = (
     <Menu
       anchorEl={mobileMoreAnchorEl}
       anchorOrigin={{
-        vertical: 'top',
-        horizontal: 'right',
+        vertical: "top",
+        horizontal: "right",
       }}
       id={mobileMenuId}
       keepMounted
       transformOrigin={{
-        vertical: 'top',
-        horizontal: 'right',
+        vertical: "top",
+        horizontal: "right",
       }}
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
-      
       {/* <MenuItem onClick={handleProfileMenuOpen}>
         <IconButton
           size="large"
@@ -228,21 +233,31 @@ export default function PrimarySearchAppBar() {
           
         </IconButton>
         {/* <p>Profile</p> */}
-        
+
       {/* </MenuItem> */}
-      {user ?(<><MenuItem onClick={profileHandler}>Profile</MenuItem><MenuItem onClick={signoutHandler}>Sign Out</MenuItem></>) : (<MenuItem onClick={handleClick}>Sign In</MenuItem>)}
-            
-            {/* <MenuItem onClick={sellHandler}>Sell</MenuItem>  */}
-            <MenuItem>
-            <Sellbtn dataHandler={sellHandler} btn={"Sell"} text={"Please Login First"}/>
-            </MenuItem>
+      {user ? (
+        <>
+          <MenuItem onClick={profileHandler}>Profile</MenuItem>
+          <MenuItem onClick={signoutHandler}>Sign Out</MenuItem>
+        </>
+      ) : (
+        <MenuItem onClick={handleClick}>Sign In</MenuItem>
+      )}
+
+      {/* <MenuItem onClick={sellHandler}>Sell</MenuItem>  */}
+
+      <Sellbtn
+        dataHandler={sellHandler}
+        btn={"Sell"}
+        text={"Please Login First"}
+      />
     </Menu>
   );
 
   return (
     <>
-      <Box sx={{ flexGrow: 1 , width: "100%"}}>
-        <AppBar position="static">
+      <Box sx={{ flexGrow: 1, width: "100%" }}>
+        <AppBar position="static" sx={{backgroundColor:"#f8eaff", color:"black"}}>
           <Toolbar>
             <IconButton
               size="large"
@@ -257,9 +272,11 @@ export default function PrimarySearchAppBar() {
               variant="h6"
               noWrap
               component="div"
-              sx={{ display: { xs: 'none', sm: 'block' } }}
-              onClick={()=>{navigate("/")}}
-              style={{cursor:"pointer"}}
+              sx={{ display: { xs: "none", sm: "block" } }}
+              onClick={() => {
+                navigate("/");
+              }}
+              style={{ cursor: "pointer" }}
             >
               BRAN
             </Typography>
@@ -269,11 +286,11 @@ export default function PrimarySearchAppBar() {
               </SearchIconWrapper>
               <StyledInputBase
                 placeholder="Search…"
-                inputProps={{ 'aria-label': 'search' }}
+                inputProps={{ "aria-label": "search" }}
               />
             </Search>
             <Box sx={{ flexGrow: 1 }} />
-            <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
+            <Box sx={{ display: { xs: "none", md: "flex" } }}>
               <IconButton
                 size="large"
                 edge="end"
@@ -283,11 +300,10 @@ export default function PrimarySearchAppBar() {
                 onClick={handleProfileMenuOpen}
                 color="inherit"
               >
-                <AccountCircle/>
+                <AccountCircle />
               </IconButton>
-              
             </Box>
-            <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
+            <Box sx={{ display: { xs: "flex", md: "none" } }}>
               <IconButton
                 size="large"
                 aria-label="show more"
@@ -301,23 +317,26 @@ export default function PrimarySearchAppBar() {
             </Box>
           </Toolbar>
         </AppBar>
-        
+
         {renderMobileMenu}
-        
+
         {renderMenu}
       </Box>
-      
+
       <button className="floating-button" onClick={toggleChat}>
         Chat
       </button>
-      {showChat && ( 
+      {showChat && (
         <div className="chat-container">
-          <div className='input-div'>
-          <input type="text" placeholder="Type your message here" onChange={chatHandler}/>
-          <button onClick={chatClickHandler}>Send</button>
+          <div className="input-div">
+            <input
+              type="text"
+              placeholder="Type your message here"
+              onChange={chatHandler}
+            />
+            <button onClick={chatClickHandler}>Send</button>
           </div>
         </div>
-      
       )}
     </>
   );

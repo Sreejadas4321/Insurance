@@ -8,7 +8,7 @@ export default function Common({ text, name, head, cover }) {
   const navigate = useNavigate();
   const sellHandler = async () => {
     let data = await getData(name);
-    console.log(data)
+    console.log(data);
     navigate("/show", { state: data });
   };
   return (
@@ -17,9 +17,14 @@ export default function Common({ text, name, head, cover }) {
         <h1 className="heading">{head}</h1>
         <div className="show-text">{text}</div>
         <div className="learn-btn-div">
-        <Button variant="outlined" className="learn-btn" onClick={sellHandler}>LEARN MORE</Button>
+          <Button
+            variant="outlined"
+            className="learn-btn"
+            onClick={sellHandler}
+          >
+            LEARN MORE
+          </Button>
         </div>
-        
       </div>
       <div className="img-container">
         <img className="show-img" src={cover} alt="" />

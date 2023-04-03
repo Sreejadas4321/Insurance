@@ -4,7 +4,6 @@ import Car from '../CarInsr/Car'
 import Carousel from '../carousel/Carousel'
 import Family from '../FamilyInsr/Family'
 import GuaranteedPlans from '../Guaranteed/GuaranteedPlans'
-import HeaderPage from "../header/Header"
 import Health from '../HealthInsr/Health'
 import Home from '../HomeInsr/Home'
 import Invesment from '../Invesment/Invesment'
@@ -19,7 +18,7 @@ export default function HomePage() {
   return (
     <>
     {/* <HeaderPage/> */}
-    <Carousel active={active} setActive={setActive}/>
+    <Carousel active={active} setActive={setActive} />
     {getCorretScreen(active)}
     </>
   )

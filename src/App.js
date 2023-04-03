@@ -6,7 +6,7 @@ import Sell from './components/Sell/Sell';
 import Signin from './components/Signin/Signin';
 import HeaderPage from "./components/header/Header"
 import Show from './components/show/Show';
-import PrivateRoute from './PrivateRoute';
+
 
 function App() {
   return (
